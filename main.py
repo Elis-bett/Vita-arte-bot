@@ -91,6 +91,7 @@ async def age(update, context):
     return 2
 
 
+# далее - вопросы для теста
 async def qw1(update, context):
     keyboard = [
         [InlineKeyboardButton(tests[0]['answer'][0], callback_data='1 балл')],
@@ -174,11 +175,13 @@ async def qw6(update, context):
     return 8
 
 
+# просит ввести баллы
 async def end_test(update, context):
     await update.message.reply_html(f'Введите Ваш результат: ')
     return 9
 
 
+# результаты тестирования
 async def ending_test(update, context):
     if update.message.text.isdigit():
         if int(update.message.text) in range(6, 14):
@@ -200,23 +203,29 @@ async def ending_test(update, context):
     return ConversationHandler.END
 
 
+# возвращение на исходную клавиатуру
 async def back_command(update, context):
     """Отправляет сообщение когда получена команда /back"""
     await update.message.reply_html('Пожалуйста, выберите, что вас интересует&#128522;', reply_markup=markup)
 
 
+# команда для остановки диалога
 async def stop(update, context):
+    """Отправляет сообщение когда получена команда /stop"""
     await update.message.reply_text("Всего доброго!", reply_markup=markup)
     return ConversationHandler.END
 
 
+# команда для закрытия клавиатуры
 async def close_keyboard(update, context):
+    """Отправляет сообщение когда получена команда /close"""
     await update.message.reply_text(
         "Ok",
         reply_markup=ReplyKeyboardRemove()
     )
 
 
+# завершение регистрации
 async def end_reg(update, context):
     passw = password()
     message(f" Новый зарегистрированный пользователь @{update.message.from_user.username} \n"
@@ -236,6 +245,7 @@ async def end_reg(update, context):
     return ConversationHandler.END
 
 
+# выбор курса при регистрации
 async def course(update, context):
     context.user_data['name'] = update.message.text
     keyboard = [
@@ -262,6 +272,7 @@ async def end_registration(update, context):
     return 13
 
 
+# бот реагирует на выбранную кнопку на inline клавиатуре
 async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
 
@@ -271,13 +282,15 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                                        f"Пожалуйста, напишите 'ок'")
 
 
+# ответы на самые распространенные фразы от пользователей
 async def echo(update, context):
-    if update.message.text.lower()  in ['живопись', 'графика', 'дизайн', 'роспись']:
+    if update.message.text.lower() in ['живопись', 'графика', 'дизайн', 'роспись']:
         await update.message.reply_html(f'Информация о курсах пока разрабатывается', reply_markup=markup2)
     elif 'привет' in update.message.text.lower() or 'здравствуйте' in update.message.text.lower():
-        await update.message.reply_html(random.choice(['Привет от команды Vita-arte	&#128075;', 'Доброго времени суток',
-                                                       'Вас приветствует команда Vita-arte&#128156;']),
-                                        reply_markup=markup)
+        await update.message.reply_html(
+            random.choice(['Привет от команды Vita-arte	&#128075;', 'Доброго времени суток',
+                           'Вас приветствует команда Vita-arte&#128156;']),
+            reply_markup=markup)
     elif 'направления ' in update.message.text.lower() or 'курсы' in update.message.text.lower():
         await update.message.reply_html(f'Информация о курсах пока разрабатывается', reply_markup=markup2)
     elif 'педагог ' in update.message.text.lower() or 'учител' in update.message.text.lower():
@@ -302,36 +315,37 @@ async def echo(update, context):
                                         f'Воспользуйтесь командами на клавиатуре', reply_markup=markup)
 
 
+# сценарий диалога для регистрации
 conv_handler = ConversationHandler(
-        entry_points=[CommandHandler('reg', registration_command)],
+    entry_points=[CommandHandler('reg', registration_command)],
 
-        states={
-            11: [MessageHandler(filters.TEXT & ~filters.COMMAND, course)],
-            12: [MessageHandler(filters.TEXT & ~filters.COMMAND, end_registration)],
-            13: [MessageHandler(filters.TEXT & ~filters.COMMAND, end_reg)]
-        },
+    states={
+        11: [MessageHandler(filters.TEXT & ~filters.COMMAND, course)],
+        12: [MessageHandler(filters.TEXT & ~filters.COMMAND, end_registration)],
+        13: [MessageHandler(filters.TEXT & ~filters.COMMAND, end_reg)]
+    },
 
-        fallbacks=[CommandHandler('stop', stop)]
-    )
+    fallbacks=[CommandHandler('stop', stop)]
+)
 
-
+# сценарий диалога для тестирования
 conv_handler1 = ConversationHandler(
-        entry_points=[CommandHandler('test', test_command)],
+    entry_points=[CommandHandler('test', test_command)],
 
-        states={
-            1: [MessageHandler(filters.TEXT & ~filters.COMMAND, age)],
-            2: [MessageHandler(filters.TEXT & ~filters.COMMAND, qw1)],
-            3: [MessageHandler(filters.TEXT & ~filters.COMMAND, qw2)],
-            4: [MessageHandler(filters.TEXT & ~filters.COMMAND, qw3)],
-            5: [MessageHandler(filters.TEXT & ~filters.COMMAND, qw4)],
-            6: [MessageHandler(filters.TEXT & ~filters.COMMAND, qw5)],
-            7: [MessageHandler(filters.TEXT & ~filters.COMMAND, qw6)],
-            8: [MessageHandler(filters.TEXT & ~filters.COMMAND, end_test)],
-            9: [MessageHandler(filters.TEXT & ~filters.COMMAND, ending_test)]
-        },
+    states={
+        1: [MessageHandler(filters.TEXT & ~filters.COMMAND, age)],
+        2: [MessageHandler(filters.TEXT & ~filters.COMMAND, qw1)],
+        3: [MessageHandler(filters.TEXT & ~filters.COMMAND, qw2)],
+        4: [MessageHandler(filters.TEXT & ~filters.COMMAND, qw3)],
+        5: [MessageHandler(filters.TEXT & ~filters.COMMAND, qw4)],
+        6: [MessageHandler(filters.TEXT & ~filters.COMMAND, qw5)],
+        7: [MessageHandler(filters.TEXT & ~filters.COMMAND, qw6)],
+        8: [MessageHandler(filters.TEXT & ~filters.COMMAND, end_test)],
+        9: [MessageHandler(filters.TEXT & ~filters.COMMAND, ending_test)]
+    },
 
-        fallbacks=[CommandHandler('stop', stop)]
-    )
+    fallbacks=[CommandHandler('stop', stop)]
+)
 
 
 def main():
